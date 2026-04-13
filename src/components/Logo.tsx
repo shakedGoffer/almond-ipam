@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils/cn';
+import { getImageUrl } from '@/lib/utils/images';
 
 
 export default function Logo({ expanded }: { expanded?: boolean; }) {
@@ -17,7 +18,7 @@ export default function Logo({ expanded }: { expanded?: boolean; }) {
 
 export const LogoIcon = ({ className }: { className: string }) => (
     <img
-        src={'/src/assets/images/almond-icon.png'}
+        src={getImageUrl("almond-icon.png")}
        className={className}
     />
 );

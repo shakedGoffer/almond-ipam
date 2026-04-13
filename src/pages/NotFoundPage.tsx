@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { getImageUrl } from "@/lib/utils/images";
 import { Link } from "react-router-dom";
 
 
@@ -15,7 +16,7 @@ const NotFoundPage = () => {
                       <Link to="/home">{"<- Back To Home"}</Link></Button>
                 </div>
             </div>
-            <img className="w-72" src={'/src/assets/scared-almond.png'} />
+            <img className="w-72" src={getImageUrl("scared-almond.png")}  />
         </div>
     );
 };

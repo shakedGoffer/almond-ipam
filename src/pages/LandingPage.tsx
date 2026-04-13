@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { getImageUrl } from "@/lib/utils/images";
 import { Link } from "react-router-dom";
 
 
@@ -16,7 +17,7 @@ const LandingPage = () => {
                     <Button asChild variant="secondary"><Link to="/about">Learn More</Link></Button>
                 </div>
             </div>
-            <img className="w-72" src={'/src/assets/happy-almond.png'} />
+            <img className="w-72" src={getImageUrl("happy-almond.png")}  />
         </div>
     );
 };
