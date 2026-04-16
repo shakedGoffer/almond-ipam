@@ -1,9 +1,8 @@
 import { BookOpenText, Home, Network } from "lucide-react";
 import Sidebar from "@/features/sidebar";
-import { Outlet } from "@tanstack/react-router";
 import BaseLayout from "./BaseLayout";
 
-const SidebarLayout = () => {
+const SidebarLayout = ({ children }: { children?: React.ReactNode }) => {
   return (
     <div className="flex">
       <Sidebar.provider>
@@ -21,7 +20,9 @@ const SidebarLayout = () => {
           />
         </Sidebar>
       </Sidebar.provider>
-      <BaseLayout/>
+      <BaseLayout>
+        {children}
+      </BaseLayout>
     </div>
   );
 };

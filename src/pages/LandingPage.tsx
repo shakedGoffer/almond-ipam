@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { getImageUrl } from "@/lib/utils/images";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
+
 
 
 const LandingPage = () => {

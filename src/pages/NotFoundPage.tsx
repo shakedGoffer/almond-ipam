@@ -14,7 +14,7 @@ const NotFoundPage = () => {
                 </p>
                 <div className="pt-5">
                     <Button asChild variant="secondary" >
-                      <Link to="/">{"<- Back To Home"}</Link></Button>
+                      <Link to="/home">{"<- Back To Home"}</Link></Button>
                 </div>
             </div>
             <img className="w-72" src={getImageUrl("scared-almond.png")}  />

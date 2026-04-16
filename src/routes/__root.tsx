@@ -1,16 +1,27 @@
-import SidebarLayout from "@/layouts/SidebarLayout";
+import type { AuthContext } from "@/hooks/useAuth";
+import BaseLayout from "@/layouts/BaseLayout";
+import ErrorPage from "@/pages/ErrorPage";
 import NotFoundPage from "@/pages/NotFoundPage";
-import { createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { createRootRouteWithContext } from "@tanstack/react-router";
 
-const RootLayout = () => (
-  <>
-    <SidebarLayout />
-    {/* <TanStackRouterDevtools /> */}
-  </>
-);
+type RouterContext = {
+  auth: AuthContext;
+};
 
-export const Route = createRootRoute({
-  component: RootLayout,
-  notFoundComponent: NotFoundPage,
+export const Route = createRootRouteWithContext<RouterContext>()({
+  notFoundComponent: () => {
+    return (
+      <BaseLayout>
+        <NotFoundPage />
+      </BaseLayout>
+    );
+  },
+  errorComponent: () => {
+    return (
+      <BaseLayout>
+        <ErrorPage />
+      </BaseLayout>
+    );
+  },
 });
+

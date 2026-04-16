@@ -14,14 +14,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router-dom";
 import SubnetDialogForm from "@/components/dialogs/SubnetDialogForm";
 import DeleteConfirmationDialog from "@/components/dialogs/DeleteConfirmationDialog";
 import type Subnet from "@/types/subnet";
 
 import DataTable from "@/features/dataTable";
+import { Link } from "@tanstack/react-router";
 
-const SubnetPage = () => {
+const SubnetsPage = () => {
   // Columns for Subnets DataTable
   const subnetsColumns: ColumnDef<Subnet>[] = [
     {
@@ -99,10 +99,11 @@ const SubnetPage = () => {
       id: "more",
       cell: ({ row }) => {
         const subnet = row.original;
+        const subnetAddress = subnet.address? subnet.address: "";
 
         return (
           <Button asChild variant={"ghost"} className="h-8 w-8 p-0">
-            <Link to={`/subnets/${subnet.address}`}>
+            <Link to={"/subnets/$subnetAddress"} params={{subnetAddress: subnetAddress}}>
               <ChevronsRight className="size-4.5" />
             </Link>
           </Button>
@@ -140,4 +141,4 @@ const SubnetPage = () => {
   );
 };
 
-export default SubnetPage;
+export default SubnetsPage;

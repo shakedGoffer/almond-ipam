@@ -1,4 +1,3 @@
-import { Link, useParams } from "react-router-dom";
 import fakeData from "../../fakeData/fakeData";
 import { formatAddressesData } from "@/lib/utils/formatDate";
 
@@ -30,14 +29,20 @@ import { toast } from "sonner";
 import type Address from "@/types/address";
 import type Subnet from "@/types/subnet";
 import DataTable from "@/features/dataTable";
+import { Link, Navigate, useParams } from "@tanstack/react-router";
 
 const SubnetDetailsPage = () => {
-  const { subnetAddress } = useParams();
-  // Check subnetAddress key exists in data
-  const subnet: Subnet | undefined =
-    subnetAddress && subnetAddress in fakeData
-      ? fakeData[subnetAddress as keyof typeof fakeData]
-      : undefined;
+  const { subnetAddress } = useParams({
+    from: "/_authenticated/subnets/$subnetAddress",
+  });
+  const subnet: Subnet = fakeData[subnetAddress];
+
+  if (!subnet) {
+    toast.error("The subnet your looking for cannot be found", {
+    });
+
+    return <Navigate to={"/subnets"} />;
+  }
 
   // Columns for Addresses DataTable
   const subnetAddressesColumns: ColumnDef<Address>[] = [

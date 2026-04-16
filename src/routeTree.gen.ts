@@ -9,68 +9,183 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as UnauthenticatedRouteImport } from './routes/_unauthenticated'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as UnauthenticatedIndexRouteImport } from './routes/_unauthenticated/index'
+import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedAboutRouteImport } from './routes/_authenticated/about'
+import { Route as AuthenticatedSubnetsIndexRouteImport } from './routes/_authenticated/subnets/index'
+import { Route as AuthenticatedSubnetsSubnetAddressRouteImport } from './routes/_authenticated/subnets/$subnetAddress'
 
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const UnauthenticatedRoute = UnauthenticatedRouteImport.update({
+  id: '/_unauthenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnauthenticatedIndexRoute = UnauthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => UnauthenticatedRoute,
 } as any)
+const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAboutRoute = AuthenticatedAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSubnetsIndexRoute =
+  AuthenticatedSubnetsIndexRouteImport.update({
+    id: '/subnets/',
+    path: '/subnets/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSubnetsSubnetAddressRoute =
+  AuthenticatedSubnetsSubnetAddressRouteImport.update({
+    id: '/subnets/$subnetAddress',
+    path: '/subnets/$subnetAddress',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/': typeof UnauthenticatedIndexRoute
+  '/about': typeof AuthenticatedAboutRoute
+  '/home': typeof AuthenticatedHomeRoute
+  '/subnets/$subnetAddress': typeof AuthenticatedSubnetsSubnetAddressRoute
+  '/subnets/': typeof AuthenticatedSubnetsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/': typeof UnauthenticatedIndexRoute
+  '/about': typeof AuthenticatedAboutRoute
+  '/home': typeof AuthenticatedHomeRoute
+  '/subnets/$subnetAddress': typeof AuthenticatedSubnetsSubnetAddressRoute
+  '/subnets': typeof AuthenticatedSubnetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_unauthenticated': typeof UnauthenticatedRouteWithChildren
+  '/_authenticated/about': typeof AuthenticatedAboutRoute
+  '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_unauthenticated/': typeof UnauthenticatedIndexRoute
+  '/_authenticated/subnets/$subnetAddress': typeof AuthenticatedSubnetsSubnetAddressRoute
+  '/_authenticated/subnets/': typeof AuthenticatedSubnetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths: '/' | '/about' | '/home' | '/subnets/$subnetAddress' | '/subnets/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to: '/' | '/about' | '/home' | '/subnets/$subnetAddress' | '/subnets'
+  id:
+    | '__root__'
+    | '/_authenticated'
+    | '/_unauthenticated'
+    | '/_authenticated/about'
+    | '/_authenticated/home'
+    | '/_unauthenticated/'
+    | '/_authenticated/subnets/$subnetAddress'
+    | '/_authenticated/subnets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  UnauthenticatedRoute: typeof UnauthenticatedRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/_unauthenticated': {
+      id: '/_unauthenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof UnauthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_unauthenticated/': {
+      id: '/_unauthenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof UnauthenticatedIndexRouteImport
+      parentRoute: typeof UnauthenticatedRoute
+    }
+    '/_authenticated/home': {
+      id: '/_authenticated/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthenticatedHomeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/about': {
+      id: '/_authenticated/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AuthenticatedAboutRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/subnets/': {
+      id: '/_authenticated/subnets/'
+      path: '/subnets'
+      fullPath: '/subnets/'
+      preLoaderRoute: typeof AuthenticatedSubnetsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/subnets/$subnetAddress': {
+      id: '/_authenticated/subnets/$subnetAddress'
+      path: '/subnets/$subnetAddress'
+      fullPath: '/subnets/$subnetAddress'
+      preLoaderRoute: typeof AuthenticatedSubnetsSubnetAddressRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedSubnetsSubnetAddressRoute: typeof AuthenticatedSubnetsSubnetAddressRoute
+  AuthenticatedSubnetsIndexRoute: typeof AuthenticatedSubnetsIndexRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAboutRoute: AuthenticatedAboutRoute,
+  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedSubnetsSubnetAddressRoute:
+    AuthenticatedSubnetsSubnetAddressRoute,
+  AuthenticatedSubnetsIndexRoute: AuthenticatedSubnetsIndexRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
+interface UnauthenticatedRouteChildren {
+  UnauthenticatedIndexRoute: typeof UnauthenticatedIndexRoute
+}
+
+const UnauthenticatedRouteChildren: UnauthenticatedRouteChildren = {
+  UnauthenticatedIndexRoute: UnauthenticatedIndexRoute,
+}
+
+const UnauthenticatedRouteWithChildren = UnauthenticatedRoute._addFileChildren(
+  UnauthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  UnauthenticatedRoute: UnauthenticatedRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
