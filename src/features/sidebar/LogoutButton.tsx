@@ -1,7 +1,8 @@
 import { LogOut } from "lucide-react";
 import { cn } from '@/lib/utils/cn';
 import { useSidebar } from "./SidebarProvider";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
+
 
 const LogoutButton = () => {
     const { expanded } = useSidebar();

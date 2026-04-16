@@ -1,6 +1,7 @@
 import { BookOpenText, Home, Network } from "lucide-react";
 import Sidebar from "@/features/sidebar";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "@tanstack/react-router";
+import BaseLayout from "./BaseLayout";
 
 const SidebarLayout = () => {
   return (
@@ -20,9 +21,7 @@ const SidebarLayout = () => {
           />
         </Sidebar>
       </Sidebar.provider>
-      <main className="flex-1 h-screen flex flex-col px-16 py-12 app-bg overflow-auto">
-        <Outlet />
-      </main>
+      <BaseLayout/>
     </div>
   );
 };

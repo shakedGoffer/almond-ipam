@@ -1,6 +1,7 @@
-import { NavLink } from "react-router-dom";
+
 import { cn } from "@/lib/utils/cn";
 import { useSidebar } from "./SidebarProvider";
+import { Link } from "@tanstack/react-router";
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -12,7 +13,7 @@ const SidebarItem = ({ icon, text, link }: SidebarItemProps) => {
   const { expanded } = useSidebar();
 
   return (
-    <NavLink to={link}>
+    <Link to={link}>
       {({ isActive }) => (
         <li
           className={cn(
@@ -42,7 +43,7 @@ const SidebarItem = ({ icon, text, link }: SidebarItemProps) => {
           {!expanded && <Tooltip text={text} />}
         </li>
       )}
-    </NavLink>
+    </Link>
   );
 };
 

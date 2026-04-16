@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { getImageUrl } from "@/lib/utils/images";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
+
 
 
 const NotFoundPage = () => {
@@ -13,7 +14,7 @@ const NotFoundPage = () => {
                 </p>
                 <div className="pt-5">
                     <Button asChild variant="secondary" >
-                      <Link to="/home">{"<- Back To Home"}</Link></Button>
+                      <Link to="/">{"<- Back To Home"}</Link></Button>
                 </div>
             </div>
             <img className="w-72" src={getImageUrl("scared-almond.png")}  />
