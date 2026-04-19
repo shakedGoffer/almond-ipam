@@ -1,4 +1,4 @@
-import { env } from "@/lib/consts";
+import { env } from "@/lib/config/consts";
 
 
 export const useAuth = () => {
