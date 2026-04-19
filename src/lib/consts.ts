@@ -6,6 +6,6 @@ const envSchema = z.object({
 });
 
 export const env = envSchema.parse({
-  BACK_URL: import.meta.env.VITE_BASE_URL,
+  BACK_URL: import.meta.env.VITE_BACK_URL,
   USE_AUTH: import.meta.env.VITE_USE_AUTH,
 });
