@@ -1,8 +1,5 @@
 import { ChevronsRight, MoreVertical, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import fakeData from "../../fakeData/fakeData";
-
-import { formatSubnetsData } from "../lib/utils/formatDate";
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { Edit, Trash } from "lucide-react";
@@ -20,8 +17,12 @@ import type Subnet from "@/types/subnet";
 
 import DataTable from "@/features/dataTable";
 import { Link } from "@tanstack/react-router";
+import {useSuspenseQuery } from "@tanstack/react-query";
+import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
 
 const SubnetsPage = () => {
+  const { data: subnetsList } = useSuspenseQuery(subnetsQueryOptions());
+
   // Columns for Subnets DataTable
   const subnetsColumns: ColumnDef<Subnet>[] = [
     {
@@ -99,11 +100,14 @@ const SubnetsPage = () => {
       id: "more",
       cell: ({ row }) => {
         const subnet = row.original;
-        const subnetAddress = subnet.address? subnet.address: "";
+        const subnetAddress = subnet.address ? subnet.address : "";
 
         return (
           <Button asChild variant={"ghost"} className="h-8 w-8 p-0">
-            <Link to={"/subnets/$subnetAddress"} params={{subnetAddress: subnetAddress}}>
+            <Link
+              to={"/subnets/$subnetAddress"}
+              params={{ subnetAddress: subnetAddress }}
+            >
               <ChevronsRight className="size-4.5" />
             </Link>
           </Button>
@@ -113,31 +117,29 @@ const SubnetsPage = () => {
   ];
 
   return (
-
-      <DataTable.Provider className="flex-1 min-w-min gap-6">
-        <DataTable.Toolbar>
-          <div className="flex flex-row gap-2">
-            <DataTable.SearchInput />
-            <DataTable.Filter />
-          </div>
-          <SubnetDialogForm
-            variant="create"
-            title="Create New Subnet "
-            dialogTrigger={
-              <Button className="gap-1">
-                <Plus />
-                Create New Subnet
-              </Button>
-            }
-          />
-        </DataTable.Toolbar>
-        <DataTable.Content
-          columns={subnetsColumns}
-          data={formatSubnetsData(fakeData)}
-          className="h-full"
+    <DataTable.Provider className="flex-1 min-w-min gap-6">
+      <DataTable.Toolbar>
+        <div className="flex flex-row gap-2">
+          <DataTable.SearchInput />
+          <DataTable.Filter />
+        </div>
+        <SubnetDialogForm
+          variant="create"
+          title="Create New Subnet "
+          dialogTrigger={
+            <Button className="gap-1">
+              <Plus />
+              Create New Subnet
+            </Button>
+          }
         />
-      </DataTable.Provider>
-  
+      </DataTable.Toolbar>
+      <DataTable.Content
+        columns={subnetsColumns}
+        data={subnetsList}
+        className="h-full"
+      />
+    </DataTable.Provider>
   );
 };
 

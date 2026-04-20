@@ -1,9 +1,7 @@
-import fakeData from "../../fakeData/fakeData";
 import AddressAvailability from "@/components/AddressAvailability";
 import AddressSummary from "@/components/AddressSummary";
 import TotalsPieChart from "@/components/TotalsPieChart";
 import {
-  formatSubnetsData,
   countTotalAddresses,
 } from "../lib/utils/formatDate";
 import type Subnet from "@/types/subnet";
@@ -20,8 +18,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DataTable from "@/features/dataTable";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
 
 const HomePage = () => {
+  const { data: subnetsList } = useSuspenseQuery(subnetsQueryOptions());
+  
+  // Columns for Subnets DataTable
   const subnetsColumns: ColumnDef<Subnet>[] = [
     {
       accessorKey: "fullAddress",
@@ -69,7 +72,6 @@ const HomePage = () => {
     },
   ];
 
-  const subnetsList = formatSubnetsData(fakeData);
   const totalAddresses = countTotalAddresses(subnetsList);
 
   return (

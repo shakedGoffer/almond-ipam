@@ -1,4 +1,3 @@
-import fakeData from "../../fakeData/fakeData";
 import { formatAddressesData } from "@/lib/utils/formatDate";
 
 import { Button } from "@/components/ui/button";
@@ -30,16 +29,19 @@ import type Address from "@/types/address";
 import type Subnet from "@/types/subnet";
 import DataTable from "@/features/dataTable";
 import { Link, Navigate, useParams } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
 
 const SubnetDetailsPage = () => {
   const { subnetAddress } = useParams({
     from: "/_authenticated/subnets/$subnetAddress",
   });
-  const subnet: Subnet = fakeData[subnetAddress];
+
+  const { data: subnetsList } = useSuspenseQuery(subnetsQueryOptions());
+  const subnet: Subnet = subnetsList[subnetAddress];
 
   if (!subnet) {
-    toast.error("The subnet your looking for cannot be found", {
-    });
+    toast.error("The subnet your looking for cannot be found", {});
 
     return <Navigate to={"/subnets"} />;
   }
