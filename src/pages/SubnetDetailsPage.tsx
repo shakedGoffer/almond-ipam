@@ -37,8 +37,9 @@ const SubnetDetailsPage = () => {
     from: "/_authenticated/subnets/$subnetAddress",
   });
 
-  const { data: subnetsList } = useSuspenseQuery(subnetsQueryOptions());
-  const subnet: Subnet = subnetsList[subnetAddress];
+  const { data: subnetsList } = useSuspenseQuery(subnetsQueryOptions({subnet_addresses:[subnetAddress]}));
+  const subnet = subnetsList.filter((subnet: Subnet) => subnet.address == subnetAddress)[0];
+  
 
   if (!subnet) {
     toast.error("The subnet your looking for cannot be found", {});

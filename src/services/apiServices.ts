@@ -2,10 +2,29 @@ import { formatSubnetsData } from "@/lib/utils/formatDate"
 import fakeData from "../../fakeData/fakeData"
 import type Subnet from "@/types/subnet";
 
-const getSubnets : Subnet[] = async () => {
-    console.log("Fetching Data");
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    return formatSubnetsData(fakeData);
+
+
+interface filterOptionsType {
+    subnet_addresses?: string[];
+    subnet_name?: string;
+    subnet_description?: string;
+    subnet_cidr?: number;
 }
 
-export { getSubnets }
+type GetSubnetType = (filterOptions?: filterOptionsType) => Promise<Subnet[]>;
+
+
+const getSubnets: GetSubnetType = async (filterOptions) => {
+    console.log("Fetching Data");
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    if (!filterOptions)
+        return formatSubnetsData(fakeData);
+
+    // TODO - add filtering 
+    console.log(filterOptions);
+    return formatSubnetsData(fakeData);
+};
+
+
+
+export { getSubnets, type filterOptionsType }

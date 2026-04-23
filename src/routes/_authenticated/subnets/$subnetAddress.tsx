@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/subnets/$subnetAddress")({
   loader: async ({ params, context}) => {
-    const subnetsList = await context.queryClient.ensureQueryData(subnetsQueryOptions())
+    const subnetsList = await context.queryClient.ensureQueryData(subnetsQueryOptions({subnet_addresses:[params.subnetAddress]}))
     return {
       subnetAddress: params.subnetAddress,
       subnetsList: subnetsList,
