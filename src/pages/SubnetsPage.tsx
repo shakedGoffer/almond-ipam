@@ -17,7 +17,7 @@ import type Subnet from "@/types/subnet";
 
 import DataTable from "@/features/dataTable";
 import { Link } from "@tanstack/react-router";
-import {useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
 
 const SubnetsPage = () => {
@@ -26,6 +26,7 @@ const SubnetsPage = () => {
   // Columns for Subnets DataTable
   const subnetsColumns: ColumnDef<Subnet>[] = [
     {
+      id: "fullAddress",
       accessorKey: "fullAddress",
       enableGlobalFilter: true,
       header: ({ column }) => (
@@ -33,6 +34,7 @@ const SubnetsPage = () => {
       ),
     },
     {
+      id: "name",
       accessorKey: "name",
       enableGlobalFilter: true,
       header: ({ column }) => (
@@ -121,7 +123,13 @@ const SubnetsPage = () => {
       <DataTable.Toolbar>
         <div className="flex flex-row gap-2">
           <DataTable.SearchInput />
-          <DataTable.Filter />
+          <DataTable.Filter
+            filterInputs={[
+              { id: "fullAddress", label: "Subnet Address", placeholder: "1.1.1.0..." },
+              { id: "name", label: "Subnet Name" },
+              { id: "description", label: "Subnet Description" },
+            ]}
+          />
         </div>
         <SubnetDialogForm
           variant="create"

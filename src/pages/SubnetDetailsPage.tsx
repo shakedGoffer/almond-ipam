@@ -37,9 +37,9 @@ const SubnetDetailsPage = () => {
     from: "/_authenticated/subnets/$subnetAddress",
   });
 
-  const { data: subnetsList } = useSuspenseQuery(subnetsQueryOptions({subnet_addresses:[subnetAddress]}));
+  const { data: subnetsList } = useSuspenseQuery(subnetsQueryOptions({ subnet_addresses: [subnetAddress] }));
   const subnet = subnetsList.filter((subnet: Subnet) => subnet.address == subnetAddress)[0];
-  
+
 
   if (!subnet) {
     toast.error("The subnet your looking for cannot be found", {});
@@ -50,24 +50,28 @@ const SubnetDetailsPage = () => {
   // Columns for Addresses DataTable
   const subnetAddressesColumns: ColumnDef<Address>[] = [
     {
+      id: "description",
       accessorKey: "address_description",
       header: ({ column }) => (
         <DataTable.ColumnHeader column={column} sort title="Description" />
       ),
     },
     {
+      id: "ip",
       accessorKey: "ip",
       header: ({ column }) => (
         <DataTable.ColumnHeader column={column} sort title="Address" />
       ),
     },
     {
+      id: "mac",
       accessorKey: "mac_address",
       header: ({ column }) => (
         <DataTable.ColumnHeader column={column} sort title="Mac" />
       ),
     },
     {
+      id: "type",
       accessorKey: "type",
       header: ({ column }) => (
         <DataTable.ColumnHeader column={column} sort title="Type" />
@@ -211,7 +215,23 @@ const SubnetDetailsPage = () => {
         <DataTable.Provider className="mt-4">
           <DataTable.Toolbar className="justify-start">
             <DataTable.SearchInput />
-            <DataTable.Filter />
+            <DataTable.Filter
+              filterInputs={[
+                {
+                  id: "ip",
+                  label: "IP Address",
+                  placeholder: "1.1.1.69..."
+                },
+                {
+                  id: "description",
+                  label: "Description",
+                },
+                {
+                  id: "type",
+                  label: "Address Type",
+                  placeholder: ""
+                },
+              ]} />
           </DataTable.Toolbar>
           <DataTable.Content
             columns={subnetAddressesColumns}

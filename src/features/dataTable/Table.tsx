@@ -9,6 +9,7 @@ import {
   useReactTable,
   type Header,
   getFilteredRowModel,
+  type ColumnFiltersState,
 } from "@tanstack/react-table";
 
 import {
@@ -19,7 +20,7 @@ import {
   TableRow,
   Table,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils/cn";
 import { useTableContext } from "./TableProvider";
 import UsageBar from "@/components/UsageBar";
@@ -38,7 +39,9 @@ const TableContent = <TData, TValue>({
   className,
 }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const { globalFilter, setGlobalFilter } = useTableContext();
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const { globalFilter, setGlobalFilter, setTable } = useTableContext();
+
   const table = useReactTable({
     data,
     columns,
@@ -48,11 +51,20 @@ const TableContent = <TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setGlobalFilter,
+    onColumnFiltersChange: setColumnFilters,
     state: {
       sorting,
+      columnFilters,
       globalFilter,
     },
   });
+
+  // Set table instance for table context
+  useEffect(() => {
+    if (setTable) {
+      setTable(table);
+    }
+  }, [table, setTable]);
 
   return (
     <div
@@ -110,7 +122,7 @@ const DataTableCell = <TData,>({ cell }: { cell: Cell<TData, unknown> }) => {
         <div className="flex flex-row gap-2 items-center">
           <div
             className="size-4 rounded-sm"
-            style={{ backgroundColor: `var(--color-address-${cellValue}` }}
+            style={{ backgroundColor: `var(--color-address-${cellValue})` }}
           />
           <span className="capitalize">{cellValue} </span>
         </div>
@@ -125,7 +137,7 @@ const DataTableCell = <TData,>({ cell }: { cell: Cell<TData, unknown> }) => {
         "px-6 max-w-92 truncate min-w-min",
         cellID === "usage" && "min-w-50",
         (cellID === "actions" || cellID === "more") &&
-          "w-fit text-center px-2 w-10",
+        "w-fit text-center px-2 w-10",
       )}
     >
       {cellContent({ cellID })}
