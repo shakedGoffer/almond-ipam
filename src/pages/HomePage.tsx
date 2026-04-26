@@ -1,9 +1,7 @@
 import AddressAvailability from "@/components/AddressAvailability";
 import AddressSummary from "@/components/AddressSummary";
 import TotalsPieChart from "@/components/TotalsPieChart";
-import {
-  countTotalAddresses,
-} from "../lib/utils/formatDate";
+import { countTotalAddresses } from "../lib/utils/formatDate";
 import type Subnet from "@/types/subnet";
 
 import { type ColumnDef } from "@tanstack/react-table";
@@ -18,12 +16,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DataTable from "@/features/dataTable";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
+import { redirect } from "@tanstack/react-router";
 
 const HomePage = () => {
-  const { data: subnetsList } = useSuspenseQuery(subnetsQueryOptions());
-  
+  const { data: subnetsList } = useQuery(subnetsQueryOptions());
+  if (!subnetsList)
+    throw redirect({
+      to: "/",
+    });
+
+    
   // Columns for Subnets DataTable
   const subnetsColumns: ColumnDef<Subnet>[] = [
     {

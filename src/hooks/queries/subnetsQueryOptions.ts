@@ -5,7 +5,7 @@ import { queryOptions } from "@tanstack/react-query"
 
 const subnetsQueryOptions = (filterOptions?: filterOptionsType) => {
     return queryOptions({
-        queryKey: [QUERY_KEYS.subnets,],
+        queryKey: [QUERY_KEYS.subnets, filterOptions ?? {}],
         queryFn: () => getSubnets(filterOptions),
         staleTime: 5 * 1000,
     })

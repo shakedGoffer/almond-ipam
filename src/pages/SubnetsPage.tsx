@@ -16,12 +16,16 @@ import DeleteConfirmationDialog from "@/components/dialogs/DeleteConfirmationDia
 import type Subnet from "@/types/subnet";
 
 import DataTable from "@/features/dataTable";
-import { Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, redirect } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
 
 const SubnetsPage = () => {
-  const { data: subnetsList } = useSuspenseQuery(subnetsQueryOptions());
+  const { data: subnetsList } = useQuery(subnetsQueryOptions());
+  if (!subnetsList)
+    throw redirect({
+      to: "/",
+    });
 
   // Columns for Subnets DataTable
   const subnetsColumns: ColumnDef<Subnet>[] = [
@@ -125,7 +129,11 @@ const SubnetsPage = () => {
           <DataTable.SearchInput />
           <DataTable.Filter
             filterInputs={[
-              { id: "fullAddress", label: "Subnet Address", placeholder: "1.1.1.0..." },
+              {
+                id: "fullAddress",
+                label: "Subnet Address",
+                placeholder: "1.1.1.0...",
+              },
               { id: "name", label: "Subnet Name" },
               { id: "description", label: "Subnet Description" },
             ]}
