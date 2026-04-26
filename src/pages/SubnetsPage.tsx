@@ -16,16 +16,13 @@ import DeleteConfirmationDialog from "@/components/dialogs/DeleteConfirmationDia
 import type Subnet from "@/types/subnet";
 
 import DataTable from "@/features/dataTable";
-import { Link, redirect } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
 
 const SubnetsPage = () => {
-  const { data: subnetsList } = useQuery(subnetsQueryOptions());
-  if (!subnetsList)
-    throw redirect({
-      to: "/",
-    });
+  const { data: subnetsList = [] } = useQuery(subnetsQueryOptions());
+
 
   // Columns for Subnets DataTable
   const subnetsColumns: ColumnDef<Subnet>[] = [

@@ -28,7 +28,7 @@ import { toast } from "sonner";
 import type Address from "@/types/address";
 import type Subnet from "@/types/subnet";
 import DataTable from "@/features/dataTable";
-import { Link, Navigate, redirect, useParams } from "@tanstack/react-router";
+import { Link, Navigate, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
 
@@ -37,13 +37,10 @@ const SubnetDetailsPage = () => {
     from: "/_authenticated/subnets/$subnetAddress",
   });
 
-  const { data: subnetsList } = useQuery(
+  const { data: subnetsList = [] } = useQuery(
     subnetsQueryOptions({ subnet_addresses: [subnetAddress] }),
   );
-  if (!subnetsList)
-    throw redirect({
-      to: "/",
-    });
+
 
   const subnet = subnetsList.filter(
     (subnet: Subnet) => subnet.address == subnetAddress,

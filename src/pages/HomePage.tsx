@@ -18,14 +18,10 @@ import {
 import DataTable from "@/features/dataTable";
 import { useQuery } from "@tanstack/react-query";
 import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
-import { redirect } from "@tanstack/react-router";
 
 const HomePage = () => {
-  const { data: subnetsList } = useQuery(subnetsQueryOptions());
-  if (!subnetsList)
-    throw redirect({
-      to: "/",
-    });
+  const { data: subnetsList = [] } = useQuery(subnetsQueryOptions());
+
 
     
   // Columns for Subnets DataTable
