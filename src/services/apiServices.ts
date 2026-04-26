@@ -26,5 +26,15 @@ const getSubnets: GetSubnetType = async (filterOptions) => {
 };
 
 
+const deleteSubnet = async (id: number) => {
+    console.log("Deleting subnet:", id);
 
-export { getSubnets, type filterOptionsType }
+    await new Promise((r) => setTimeout(r, 1000));
+
+    // later:
+    // await api.delete(`/subnets/${id}`);
+
+    return id;
+};
+
+export { getSubnets, deleteSubnet, type filterOptionsType }
