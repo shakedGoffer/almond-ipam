@@ -18,11 +18,9 @@ import type Subnet from "@/types/subnet";
 import DataTable from "@/features/dataTable";
 import { Link } from "@tanstack/react-router";
 import useSubnetsQuery from "@/hooks/queries/useSubnets";
-import { useDeleteSubnet } from "@/hooks/mutations/useDeleteSubnet";
 
 const SubnetsPage = () => {
   const subnetsList = useSubnetsQuery();
-  const deleteSubnetMutation = useDeleteSubnet();
 
   // Columns for Subnets DataTable
   const subnetsColumns: ColumnDef<Subnet>[] = [

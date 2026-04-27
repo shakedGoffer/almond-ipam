@@ -26,7 +26,6 @@ import DeleteConfirmationDialog from "@/components/dialogs/DeleteConfirmationDia
 import AddressDialogForm from "@/components/dialogs/AddressDialogForm";
 import { toast } from "sonner";
 import type Address from "@/types/address";
-import type Subnet from "@/types/subnet";
 import DataTable from "@/features/dataTable";
 import { Link, Navigate, useParams } from "@tanstack/react-router";
 import useSubnetsQuery from "@/hooks/queries/useSubnets";
@@ -36,11 +35,8 @@ const SubnetDetailsPage = () => {
     from: "/_authenticated/subnets/$subnetAddress",
   });
 
-  const subnetsList = useSubnetsQuery(subnetAddress);
+  const subnet = useSubnetsQuery(subnetAddress)[0];
 
-  const subnet = subnetsList.filter(
-    (subnet: Subnet) => subnet.address == subnetAddress,
-  )[0];
 
   if (!subnet) {
     toast.error("The subnet your looking for cannot be found", {});
