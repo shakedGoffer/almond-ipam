@@ -29,18 +29,14 @@ import type Address from "@/types/address";
 import type Subnet from "@/types/subnet";
 import DataTable from "@/features/dataTable";
 import { Link, Navigate, useParams } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
+import useSubnetsQuery from "@/hooks/queries/useSubnets";
 
 const SubnetDetailsPage = () => {
   const { subnetAddress } = useParams({
     from: "/_authenticated/subnets/$subnetAddress",
   });
 
-  const { data: subnetsList = [] } = useQuery(
-    subnetsQueryOptions({ subnet_addresses: [subnetAddress] }),
-  );
-
+  const subnetsList = useSubnetsQuery(subnetAddress);
 
   const subnet = subnetsList.filter(
     (subnet: Subnet) => subnet.address == subnetAddress,

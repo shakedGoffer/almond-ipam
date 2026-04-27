@@ -17,12 +17,12 @@ import type Subnet from "@/types/subnet";
 
 import DataTable from "@/features/dataTable";
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
+import useSubnetsQuery from "@/hooks/queries/useSubnets";
+import { useDeleteSubnet } from "@/hooks/mutations/useDeleteSubnet";
 
 const SubnetsPage = () => {
-  const { data: subnetsList = [] } = useQuery(subnetsQueryOptions());
-
+  const subnetsList = useSubnetsQuery();
+  const deleteSubnetMutation = useDeleteSubnet();
 
   // Columns for Subnets DataTable
   const subnetsColumns: ColumnDef<Subnet>[] = [
@@ -103,13 +103,12 @@ const SubnetsPage = () => {
       id: "more",
       cell: ({ row }) => {
         const subnet = row.original;
-        const subnetAddress = subnet.address ? subnet.address : "";
 
         return (
           <Button asChild variant={"ghost"} className="h-8 w-8 p-0">
             <Link
               to={"/subnets/$subnetAddress"}
-              params={{ subnetAddress: subnetAddress }}
+              params={{ subnetAddress: String(subnet.address) }}
             >
               <ChevronsRight className="size-4.5" />
             </Link>

@@ -16,11 +16,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DataTable from "@/features/dataTable";
-import { useQuery } from "@tanstack/react-query";
-import { subnetsQueryOptions } from "@/hooks/queries/subnetsQueryOptions";
+import useSubnetsQuery from "@/hooks/queries/useSubnets";
 
 const HomePage = () => {
-  const { data: subnetsList = [] } = useQuery(subnetsQueryOptions());
+  const subnetsList = useSubnetsQuery();
 
 
     

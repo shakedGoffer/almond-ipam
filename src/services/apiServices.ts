@@ -1,40 +1,25 @@
-import { formatSubnetsData } from "@/lib/utils/formatDate"
+import { env } from "@/lib/config/consts";
 import fakeData from "../../fakeData/fakeData"
 import type Subnet from "@/types/subnet";
 
 
-
-interface filterOptionsType {
-    subnet_addresses?: string[];
-    subnet_name?: string;
-    subnet_description?: string;
-    subnet_cidr?: number;
-}
-
-type GetSubnetType = (filterOptions?: filterOptionsType) => Promise<Subnet[]>;
+type GetSubnetType = (subnet_address?: string) => Promise<Record<string, Subnet>>;
 
 
-const getSubnets: GetSubnetType = async (filterOptions) => {
+const fetchSubnets: GetSubnetType = async (subnet_address) => {
+    if (!env.BACK_URL)
+        return subnet_address ? {subnet_address:fakeData[subnet_address]} : fakeData;
     console.log("Fetching Data");
     await new Promise((resolve) => setTimeout(resolve, 5000));
-    if (!filterOptions)
-        return formatSubnetsData(fakeData);
-
-    // TODO - add filtering 
-    console.log(filterOptions);
-    return formatSubnetsData(fakeData);
+    return subnet_address ?{subnet_address:fakeData[subnet_address]} : fakeData; //axios fetch
 };
 
 
-const deleteSubnet = async (id: number) => {
-    console.log("Deleting subnet:", id);
+const deleteSubnet = async (subnet_address?: string) => {
+    console.log("Deleting subnet:", subnet_address);
 
-    await new Promise((r) => setTimeout(r, 1000));
-
-    // later:
-    // await api.delete(`/subnets/${id}`);
-
-    return id;
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return subnet_address; //axios delete
 };
 
-export { getSubnets, deleteSubnet, type filterOptionsType }
+export { fetchSubnets, deleteSubnet }
