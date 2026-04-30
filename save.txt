@@ -96,3 +96,137 @@ export function useAuth() {
   }
   return context
 }
+
+
+///////////////////////////////////////////////////////////////////////
+
+
+
+// src/context/AuthContext.js
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+const AuthContext = createContext(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  // Function to get the access token (could be from localStorage or a cookie management utility)
+  const getAccessToken = () => {
+    return localStorage.getItem('accessToken'); // Or read from HttpOnly cookie via a backend endpoint
+  };
+  // Function to set the access token
+  const setAccessToken = (token) => {
+    localStorage.setItem('accessToken', token); // Or set HttpOnly cookie via a backend endpoint
+  };
+  // Function to remove tokens on logout
+  const clearAuthTokens = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken'); // If you store refresh token in localStorage
+    setUser(null);
+    // Invalidate refresh token on backend (important for security)
+    axios.post('/api/logout');
+  };
+  // Axios instance for API calls (configured for token refresh)
+  const axiosInstance = axios.create({
+    baseURL: 'http://localhost:5000/api', // Replace with your backend API URL
+    withCredentials: true, // Important for sending cookies (if using HttpOnly refresh token)
+  });
+  // Request Interceptor: Add access token to outgoing requests
+  axiosInstance.interceptors.request.use(
+    (config) => {
+      const token = getAccessToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+  // Response Interceptor: Handle token expiry and refresh
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+      // If error is 401 (Unauthorized) and it's not a retry request
+      if (error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true; // Mark as retried to prevent infinite loops
+        try {
+          // Attempt to refresh the token
+          const refreshToken = localStorage.getItem('refreshToken'); // Or it will be sent automatically via HttpOnly cookie
+          if (!refreshToken && !axiosInstance.defaults.withCredentials) { // If not using HttpOnly cookie and refresh token not found
+            clearAuthTokens();
+            // Redirect to login or show error
+            return Promise.reject(error);
+          }
+          const refreshResponse = await axiosInstance.post('/refresh-token', { refreshToken }); // Send refresh token if not using HttpOnly cookie
+          const newAccessToken = refreshResponse.data.accessToken;
+          setAccessToken(newAccessToken);
+          // Retry the original request with the new access token
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return axiosInstance(originalRequest);
+        } catch (refreshError) {
+          // Refresh token failed or expired, log out the user
+          console.error("Token refresh failed:", refreshError);
+          clearAuthTokens();
+          // You might want to redirect to login page here using navigate from react-router-dom
+          // Example: history.push('/login'); or window.location.href = '/login';
+          return Promise.reject(refreshError);
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+  const login = useCallback(async (credentials) => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.post('/login', credentials);
+      const { accessToken, refreshToken, user: userData } = response.data;
+      setAccessToken(accessToken);
+      if (refreshToken) localStorage.setItem('refreshToken', refreshToken); // Store refresh token if not HttpOnly
+      setUser(userData);
+      return true; // Indicate successful login
+    } catch (err) {
+      console.error('Login failed:', err);
+      clearAuthTokens();
+      return false; // Indicate failed login
+    } finally {
+      setLoading(false);
+    }
+  }, [axiosInstance]);
+  const logout = useCallback(() => {
+    clearAuthTokens();
+  }, []);
+  // Initial check for tokens on app load
+  useEffect(() => {
+    const token = getAccessToken();
+    if (token) {
+      // You might want to validate the token on the server side here
+      // or decode it to set the user state if valid (for basic info)
+      // For a more robust solution, fetch user info from a protected endpoint
+      axiosInstance.get('/user-info')
+        .then(response => {
+          setUser(response.data.user);
+        })
+        .catch(() => {
+          clearAuthTokens();
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [axiosInstance]);
+  const value = {
+    user,
+    loading,
+    login,
+    logout,
+    axiosInstance, // Expose the configured axios instance for other components
+  };
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
