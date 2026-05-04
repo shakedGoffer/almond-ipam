@@ -10,6 +10,7 @@ import {
   type Header,
   getFilteredRowModel,
   type ColumnFiltersState,
+  type Row,
 } from "@tanstack/react-table";
 
 import {
@@ -20,7 +21,7 @@ import {
   TableRow,
   Table,
 } from "@/components/ui/table";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { cn } from "@/lib/utils/cn";
 import { useTableContext } from "./TableProvider";
 import UsageBar from "@/components/UsageBar";
@@ -31,12 +32,14 @@ interface DataTableProps<TData, TValue> {
   className?: string;
   searchBar?: boolean;
   columnFilters?: React.ReactNode;
+  renderSubComponent?: ({ row }: { row: Row<TData>; }) => React.ReactNode;
 }
 
 const TableContent = <TData, TValue>({
   columns,
   data,
   className,
+  renderSubComponent,
 }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -46,6 +49,7 @@ const TableContent = <TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowCanExpand: () => Boolean(renderSubComponent),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -86,15 +90,27 @@ const TableContent = <TData, TValue>({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                className="border-gray-500/20"
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <DataTableCell key={cell.id} cell={cell} />
-                ))}
-              </TableRow>
+              <Fragment key={row.id}>
+                <TableRow
+                  className="border-gray-500/20"
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <DataTableCell key={cell.id} cell={cell} />
+                  ))}
+                </TableRow>
+                {row.getIsExpanded() && (
+                  <TableRow className="hover:bg-transparent">
+                    <TableCell
+                      colSpan={row.getVisibleCells().length}
+                      className="p-0"
+                    >
+                      {renderSubComponent && renderSubComponent({ row })}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </Fragment>
             ))
           ) : (
             <TableRow>
@@ -136,8 +152,8 @@ const DataTableCell = <TData,>({ cell }: { cell: Cell<TData, unknown> }) => {
       className={cn(
         "px-6 max-w-92 truncate min-w-min",
         cellID === "usage" && "min-w-50",
-        (cellID === "actions" || cellID === "more") &&
-        "w-fit text-center px-2 w-10",
+        (cellID === "actions" || cellID === "more" || cellID === "expander") &&
+          "w-fit text-center px-2 w-10",
       )}
     >
       {cellContent({ cellID })}

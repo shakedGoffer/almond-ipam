@@ -13,6 +13,7 @@ import { Route as UnauthenticatedRouteImport } from './routes/_unauthenticated'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as UnauthenticatedIndexRouteImport } from './routes/_unauthenticated/index'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedAdmin_dashboardRouteImport } from './routes/_authenticated/admin_dashboard'
 import { Route as AuthenticatedAboutRouteImport } from './routes/_authenticated/about'
 import { Route as AuthenticatedSubnetsIndexRouteImport } from './routes/_authenticated/subnets/index'
 import { Route as AuthenticatedSubnetsSubnetAddressRouteImport } from './routes/_authenticated/subnets/$subnetAddress'
@@ -35,6 +36,12 @@ const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdmin_dashboardRoute =
+  AuthenticatedAdmin_dashboardRouteImport.update({
+    id: '/admin_dashboard',
+    path: '/admin_dashboard',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAboutRoute = AuthenticatedAboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -56,6 +63,7 @@ const AuthenticatedSubnetsSubnetAddressRoute =
 export interface FileRoutesByFullPath {
   '/': typeof UnauthenticatedIndexRoute
   '/about': typeof AuthenticatedAboutRoute
+  '/admin_dashboard': typeof AuthenticatedAdmin_dashboardRoute
   '/home': typeof AuthenticatedHomeRoute
   '/subnets/$subnetAddress': typeof AuthenticatedSubnetsSubnetAddressRoute
   '/subnets/': typeof AuthenticatedSubnetsIndexRoute
@@ -63,6 +71,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof UnauthenticatedIndexRoute
   '/about': typeof AuthenticatedAboutRoute
+  '/admin_dashboard': typeof AuthenticatedAdmin_dashboardRoute
   '/home': typeof AuthenticatedHomeRoute
   '/subnets/$subnetAddress': typeof AuthenticatedSubnetsSubnetAddressRoute
   '/subnets': typeof AuthenticatedSubnetsIndexRoute
@@ -72,6 +81,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_unauthenticated': typeof UnauthenticatedRouteWithChildren
   '/_authenticated/about': typeof AuthenticatedAboutRoute
+  '/_authenticated/admin_dashboard': typeof AuthenticatedAdmin_dashboardRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_unauthenticated/': typeof UnauthenticatedIndexRoute
   '/_authenticated/subnets/$subnetAddress': typeof AuthenticatedSubnetsSubnetAddressRoute
@@ -79,14 +89,27 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/home' | '/subnets/$subnetAddress' | '/subnets/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/admin_dashboard'
+    | '/home'
+    | '/subnets/$subnetAddress'
+    | '/subnets/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/home' | '/subnets/$subnetAddress' | '/subnets'
+  to:
+    | '/'
+    | '/about'
+    | '/admin_dashboard'
+    | '/home'
+    | '/subnets/$subnetAddress'
+    | '/subnets'
   id:
     | '__root__'
     | '/_authenticated'
     | '/_unauthenticated'
     | '/_authenticated/about'
+    | '/_authenticated/admin_dashboard'
     | '/_authenticated/home'
     | '/_unauthenticated/'
     | '/_authenticated/subnets/$subnetAddress'
@@ -128,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHomeRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin_dashboard': {
+      id: '/_authenticated/admin_dashboard'
+      path: '/admin_dashboard'
+      fullPath: '/admin_dashboard'
+      preLoaderRoute: typeof AuthenticatedAdmin_dashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/about': {
       id: '/_authenticated/about'
       path: '/about'
@@ -154,6 +184,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
+  AuthenticatedAdmin_dashboardRoute: typeof AuthenticatedAdmin_dashboardRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedSubnetsSubnetAddressRoute: typeof AuthenticatedSubnetsSubnetAddressRoute
   AuthenticatedSubnetsIndexRoute: typeof AuthenticatedSubnetsIndexRoute
@@ -161,6 +192,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAboutRoute: AuthenticatedAboutRoute,
+  AuthenticatedAdmin_dashboardRoute: AuthenticatedAdmin_dashboardRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedSubnetsSubnetAddressRoute:
     AuthenticatedSubnetsSubnetAddressRoute,
